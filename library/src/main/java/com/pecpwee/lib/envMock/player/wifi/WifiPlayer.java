@@ -51,7 +51,7 @@ public class WifiPlayer extends AbsPlayer<IWifiPlayerListener> {
                                 List<ScanResult> scanResults = getScanResultObj.getScanResults();
 
                                 for (ScanResult sc : scanResults) {
-                                    sc.timestamp = SystemClock.elapsedRealtime();//mock scan time
+                                    sc.timestamp = SystemClock.elapsedRealtime() * 1000L;//mock scan time
                                 }
                                 mListener.setScanWifiList(getScanResultObj.getScanResults());
                             }
