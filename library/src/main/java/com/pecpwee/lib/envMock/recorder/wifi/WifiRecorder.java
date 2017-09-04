@@ -56,7 +56,7 @@ public class WifiRecorder extends AbsRecorder {
                 return 0;
             }
         });
-        while (list.size() > RecordConfig.getInstance().getSampleInterval()) {
+        while (list.size() > RecordConfig.getInstance().getWifiScanCountUpperLimit()) {
             list.remove(list.size() - 1);
         }
         return list;

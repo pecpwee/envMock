@@ -6,6 +6,7 @@ import android.os.Handler;
 
 import com.pecpwee.lib.envMock.hook.AbsServiceFetcher;
 import com.pecpwee.lib.envMock.hook.CenterServiceManager;
+import com.pecpwee.lib.envMock.middle.connect.ConnectivityServiceFactory;
 import com.pecpwee.lib.envMock.middle.location.LocationServiceFactory;
 import com.pecpwee.lib.envMock.middle.telephony.TelephonyServiceFactory;
 import com.pecpwee.lib.envMock.middle.wifi.WifiServiceFactory;
@@ -62,6 +63,8 @@ public class EnvMockInstaller {
         serviceList.add(new LocationServiceFactory(context));
 
         serviceList.add(new TelephonyServiceFactory(context));
+
+        serviceList.add(new ConnectivityServiceFactory(context));
 
         for (AbsServiceFetcher serviceFactory : serviceList) {
             serviceFactory.install();

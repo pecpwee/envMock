@@ -78,6 +78,13 @@ public class PlayController {
         ensureIsManualMode();
         PlayConfig.getInstance().getModuleStateMap().put(Context.LOCATION_SERVICE, isEnable);
         return this;
+    }
+
+    public PlayController setConnEnable(boolean isEnable) {
+        ensureNoPlaying();
+        ensureIsManualMode();
+        PlayConfig.getInstance().getModuleStateMap().put(Context.CONNECTIVITY_SERVICE, isEnable);
+        return this;
 
     }
 

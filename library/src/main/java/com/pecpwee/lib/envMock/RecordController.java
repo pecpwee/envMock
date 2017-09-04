@@ -3,6 +3,7 @@ package com.pecpwee.lib.envMock;
 import android.content.Context;
 
 import com.pecpwee.lib.envMock.recorder.AbsRecorder;
+import com.pecpwee.lib.envMock.recorder.connect.ConnRecorder;
 import com.pecpwee.lib.envMock.recorder.location.GpsRecorder;
 import com.pecpwee.lib.envMock.recorder.telephony.TelephonyRecorder;
 import com.pecpwee.lib.envMock.recorder.wifi.WifiRecorder;
@@ -25,6 +26,7 @@ public class RecordController {
         }
 
         mModuleStateMap = new HashMap<>();
+        mModuleStateMap.put(Context.CONNECTIVITY_SERVICE, new ModulePack(true, new ConnRecorder()));
         mModuleStateMap.put(Context.WIFI_SERVICE, new ModulePack(true, new WifiRecorder()));
         mModuleStateMap.put(Context.LOCATION_SERVICE, new ModulePack(true, new GpsRecorder()));
         mModuleStateMap.put(Context.TELEPHONY_SERVICE, new ModulePack(true, new TelephonyRecorder(context)));
@@ -93,7 +95,6 @@ public class RecordController {
         ensureNoRecording();
         mModuleStateMap.get(Context.LOCATION_SERVICE).recorder.setFilePath(filepath);
         return this;
-
     }
 
     public RecordController setWifiRecordFilePath(String filepath) {
@@ -107,6 +108,12 @@ public class RecordController {
     public RecordController setCellRecordFilePath(String filepath) {
         ensureNoRecording();
         mModuleStateMap.get(Context.TELEPHONY_SERVICE).recorder.setFilePath(filepath);
+
+        return this;
+    }
+    public RecordController setConnRecordFilePath(String filepath) {
+        ensureNoRecording();
+        mModuleStateMap.get(Context.CONNECTIVITY_SERVICE).recorder.setFilePath(filepath);
 
         return this;
     }

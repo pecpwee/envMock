@@ -9,6 +9,9 @@ import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -35,6 +38,7 @@ public class PlayerActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private WifiManager wifiManager;
     private TelephonyManager telephonyManager;
+    private ConnectivityManager connectivityManager;
 
     private Button btnStart;
     private Button btnStop;
@@ -50,6 +54,8 @@ public class PlayerActivity extends AppCompatActivity {
         public Location gpsLocation;
         public CellLocation cellLocation;
         public int gpsFixCount = 0;
+        public NetworkInfo networkInfo = null;
+        public Network[] allNetworks = null;
 
         @Override
         public String toString() {
@@ -83,9 +89,20 @@ public class PlayerActivity extends AppCompatActivity {
                 if (cellLocation instanceof CdmaCellLocation) {
                     sb.append("CdmaCellLocation");
                 }
+                sb.append("\n");
+            }
+            if (networkInfo != null) {
+                sb.append("networkInfo:")
+                        .append(networkInfo.isConnected())
+                        .append("\n");
+            }
+
+            if (allNetworks != null) {
+                sb.append("allNetowrks:" + allNetworks.length)
+                        .append("\n");
+
             }
             return sb.toString();
-
         }
 
 
@@ -105,6 +122,7 @@ public class PlayerActivity extends AppCompatActivity {
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         telephonyManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         timerJob = new TimerJob()
                 .setInterval(2000)
                 .setRunnable(new Runnable() {
@@ -114,6 +132,8 @@ public class PlayerActivity extends AppCompatActivity {
                         signalBundle.wifiList = wifiManager.getScanResults();
                         signalBundle.connectWifi = wifiManager.getConnectionInfo();
                         signalBundle.cellLocation = telephonyManager.getCellLocation();
+                        signalBundle.networkInfo = connectivityManager.getActiveNetworkInfo();
+                        signalBundle.allNetworks = connectivityManager.getAllNetworks();
                         tvOutput.setText(signalBundle.toString());
                     }
                 });
@@ -246,6 +266,7 @@ public class PlayerActivity extends AppCompatActivity {
 
 
     };
+
     private void requestPermission() {
         ActivityCompat.requestPermissions(PlayerActivity.this,
                 new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION

@@ -22,6 +22,7 @@ public class PlayConfig extends AbsConfig {
     private String GpsRecordFilePath = null;
     private String WifiRecordFilePath = null;
     private String CellRecordFilePath = null;
+    private String ConnRecordFilePath = null;
 
     private float mStartPlayPercentage = 0;
 
@@ -42,6 +43,7 @@ public class PlayConfig extends AbsConfig {
         mModuleStateMap.put(Context.WIFI_SERVICE, true);
         mModuleStateMap.put(Context.LOCATION_SERVICE, true);
         mModuleStateMap.put(Context.TELEPHONY_SERVICE, true);
+        mModuleStateMap.put(Context.CONNECTIVITY_SERVICE, true);
     }
 
     public Context getContext() {
@@ -84,6 +86,15 @@ public class PlayConfig extends AbsConfig {
 
     public String getCellRecordFilePath() {
         return CellRecordFilePath;
+    }
+
+    public String getConnRecordFilePath() {
+        return ConnRecordFilePath;
+    }
+
+    public String setConnRecordFilePath() {
+        ensureConfigCanChange();
+        return ConnRecordFilePath;
     }
 
     public void setCellRecordFilePath(String cellRecordFilePath) {
@@ -155,6 +166,10 @@ public class PlayConfig extends AbsConfig {
             return this;
         }
 
+        public Builder setConnMockFilePath(String filePath){
+            config.ConnRecordFilePath = filePath;
+            return this;
+        }
         public PlayConfig build() {
             return config;
         }

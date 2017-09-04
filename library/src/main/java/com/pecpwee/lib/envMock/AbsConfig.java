@@ -18,5 +18,6 @@ public class AbsConfig {
             + "/" + "WifiRecord.log";
     public static final String DEFAULT_FILEPATH_CELL = DEFAULT_RECORD_DIR_PATH
             + "/" + "TelephonyRecord.log";
-
+    public static final String DEFAULT_FILEPATH_CONN = DEFAULT_RECORD_DIR_PATH
+            + "/" + "ConnRecord.log";
 }
