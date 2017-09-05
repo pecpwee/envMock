@@ -38,7 +38,7 @@ public class ConnPlayer extends AbsPlayer<IConnectivityListener> {
                         addTimedAction(new TimedRunnable(getActiveNetwork.getTime()) {
                             @Override
                             public void run() {
-                                mListener.setActiveNetworkInfo(getActiveNetwork.getObject());
+                                mListener.setActiveNetwork(getActiveNetwork.getNetwork(),getActiveNetwork.getNetworkInfo());
                             }
                         });
                         break;
@@ -49,7 +49,7 @@ public class ConnPlayer extends AbsPlayer<IConnectivityListener> {
                         addTimedAction(new TimedRunnable(getAllNetworks.getTime()) {
                             @Override
                             public void run() {
-                                mListener.setAllNetworks(getAllNetworks.getObject());
+                                mListener.setAllNetworks(getAllNetworks.getAllNetworks(), getAllNetworks.getNetworkInfos(), getAllNetworks.getNetworkCapabilities());
                             }
                         });
                         break;

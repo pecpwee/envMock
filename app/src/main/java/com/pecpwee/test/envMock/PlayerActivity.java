@@ -15,6 +15,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -47,15 +48,16 @@ public class PlayerActivity extends AppCompatActivity {
     private LocateSignalBundle signalBundle = new LocateSignalBundle();
     private static int PERMISSION_REQUEST_CODE = 1;
 
-    public static class LocateSignalBundle {
+    public class LocateSignalBundle {
         public List<ScanResult> wifiList;
         public WifiInfo connectWifi;
         public String nmea;
         public Location gpsLocation;
         public CellLocation cellLocation;
         public int gpsFixCount = 0;
-        public NetworkInfo networkInfo = null;
         public Network[] allNetworks = null;
+        public Network activeNetwork = null;
+        public NetworkInfo activeNetworkInfo = null;
 
         @Override
         public String toString() {
@@ -91,17 +93,53 @@ public class PlayerActivity extends AppCompatActivity {
                 }
                 sb.append("\n");
             }
-            if (networkInfo != null) {
-                sb.append("networkInfo:")
-                        .append(networkInfo.isConnected())
+
+
+            if (activeNetwork != null) {
+                sb.append("activeNetwork:" + activeNetwork)
                         .append("\n");
+
             }
+            if (activeNetwork != null) {
+                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                sb.append("activeNetworkInfoByQuery:");
+                if (networkInfo == null) {
+                    sb.append("null");
+                } else {
+                    sb.append(networkInfo.isConnected());
+                }
+                sb.append("\n");
+
+            }
+            sb.append("activeNetworkInfoByOrig:");
+
+            if (activeNetworkInfo != null) {
+                sb.append(activeNetworkInfo.isConnected());
+            } else {
+                sb.append("null");
+            }
+            sb.append("\n");
+
 
             if (allNetworks != null) {
                 sb.append("allNetowrks:" + allNetworks.length)
                         .append("\n");
-
             }
+
+            if (allNetworks != null && allNetworks.length > 0) {
+                sb.append("allNetworksInfos:");
+                for (Network network : allNetworks) {
+                    NetworkInfo networkInfo = connectivityManager.getNetworkInfo(network);
+                    if (networkInfo == null) {
+                        sb.append("null");
+                    } else {
+                        sb.append(networkInfo.isConnected());
+                    }
+                }
+                sb.append("\n");
+            }
+
+
             return sb.toString();
         }
 
@@ -132,7 +170,11 @@ public class PlayerActivity extends AppCompatActivity {
                         signalBundle.wifiList = wifiManager.getScanResults();
                         signalBundle.connectWifi = wifiManager.getConnectionInfo();
                         signalBundle.cellLocation = telephonyManager.getCellLocation();
-                        signalBundle.networkInfo = connectivityManager.getActiveNetworkInfo();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            signalBundle.activeNetwork = connectivityManager.getActiveNetwork();
+                        }
+                        signalBundle.activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+                        signalBundle.allNetworks = connectivityManager.getAllNetworks();
                         signalBundle.allNetworks = connectivityManager.getAllNetworks();
                         tvOutput.setText(signalBundle.toString());
                     }

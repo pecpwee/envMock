@@ -1,17 +1,38 @@
 package com.pecpwee.lib.envMock.model.connect;
 
+import android.net.Network;
 import android.net.NetworkInfo;
 
-import com.pecpwee.lib.envMock.model.AbsObjWrapperModel;
+import com.pecpwee.lib.envMock.model.AbsTimeModel;
 
 /**
  * Created by pw on 2017/9/4.
  */
 
-public class GetActiveNetwork extends AbsObjWrapperModel<NetworkInfo> {
+public class GetActiveNetwork extends AbsTimeModel {
 
-    public GetActiveNetwork(NetworkInfo networkInfo) {
-        super(CONST.GetActiveNetwork, networkInfo);
+    private NetworkInfo networkInfo;
+    private Network network;
+
+    public GetActiveNetwork(Network network, NetworkInfo networkInfo) {
+        super(CONST.GetActiveNetwork);
+        this.network = network;
+        this.networkInfo = networkInfo;
     }
 
+    public NetworkInfo getNetworkInfo() {
+        return networkInfo;
+    }
+
+    public void setNetworkInfo(NetworkInfo networkInfo) {
+        this.networkInfo = networkInfo;
+    }
+
+    public Network getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(Network network) {
+        this.network = network;
+    }
 }

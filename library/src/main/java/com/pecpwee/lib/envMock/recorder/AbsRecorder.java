@@ -33,7 +33,9 @@ public abstract class AbsRecorder {
                 e.printStackTrace();
             }
         }
-        sb.setLength(0);
+        if (sb == null) {
+            sb = new StringBuilder();
+        }
         doRecord(CONST.BASE_START_RECORD_TIME, String.valueOf(System.currentTimeMillis()));
         onStart();
     }
@@ -41,9 +43,11 @@ public abstract class AbsRecorder {
     public final void stop() {
         onStop();
         latchlock = new CountDownLatch(1);
-        storeRecord();
         doRecord(CONST.BASE_STOP_RECORD_TIME, String.valueOf(System.currentTimeMillis()));
+        storeRecord(mFile, sb);
+        sb = null;
     }
+
 
     public abstract void onStart();
 
@@ -56,12 +60,15 @@ public abstract class AbsRecorder {
         this.mFile = new File(filePath);
     }
 
-    private void storeRecord() {
+    private void storeRecord(final File file, final StringBuilder sb) {
 
         ThreadManager.RECORD_HANDLER.post(new Runnable() {
             @Override
             public void run() {
-                writeSDCardFile(mFile, sb.toString(), true);
+                if (file.exists()) {
+                    file.delete();
+                }
+                writeSDCardFile(file, sb.toString(), true);
                 latchlock.countDown();
 
             }
