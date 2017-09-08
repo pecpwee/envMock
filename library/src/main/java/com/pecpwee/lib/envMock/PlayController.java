@@ -3,7 +3,7 @@ package com.pecpwee.lib.envMock;
 import android.content.Context;
 
 import com.pecpwee.lib.envMock.hook.CenterServiceManager;
-import com.pecpwee.lib.envMock.utils.reflect.PlayUtils;
+import com.pecpwee.lib.envMock.utils.PlayUtils;
 
 /**
  * Created by pw on 2017/8/17.
@@ -67,34 +67,59 @@ public class PlayController {
 
 
     public PlayController setWifiPlayerEnable(boolean isEnable) {
-        ensureNoPlaying();
-        ensureIsManualMode();
-        PlayConfig.getInstance().getModuleStateMap().put(Context.WIFI_SERVICE, isEnable);
+        setPlayEnableState(Context.WIFI_SERVICE,isEnable);
         return this;
     }
 
     public PlayController setGpsPlayerEnable(boolean isEnable) {
-        ensureNoPlaying();
-        ensureIsManualMode();
-        PlayConfig.getInstance().getModuleStateMap().put(Context.LOCATION_SERVICE, isEnable);
+        setPlayEnableState(Context.LOCATION_SERVICE,isEnable);
         return this;
     }
 
-    public PlayController setConnEnable(boolean isEnable) {
-        ensureNoPlaying();
-        ensureIsManualMode();
-        PlayConfig.getInstance().getModuleStateMap().put(Context.CONNECTIVITY_SERVICE, isEnable);
+    public PlayController setConnPlayerEnable(boolean isEnable) {
+        setPlayEnableState(Context.CONNECTIVITY_SERVICE,isEnable);
         return this;
-
     }
 
     public PlayController setCellPlayerEnable(boolean isEnable) {
+        setPlayEnableState(Context.TELEPHONY_SERVICE,isEnable);
+        return this;
+    }
+
+    private void setPlayEnableState(String serviceName,boolean state){
         ensureNoPlaying();
         ensureIsManualMode();
-        PlayConfig.getInstance().getModuleStateMap().put(Context.TELEPHONY_SERVICE, isEnable);
-        return this;
-
+        PlayConfig.getInstance().getModuleStateMap().get(serviceName).isPlayEnable = state;
     }
+
+
+    public PlayController setWifiHookEnable(boolean isEnable) {
+        setHookEnableState(Context.WIFI_SERVICE,isEnable);
+        return this;
+    }
+
+    public PlayController setGpsHookEnable(boolean isEnable) {
+        setHookEnableState(Context.LOCATION_SERVICE,isEnable);
+        return this;
+    }
+
+    public PlayController setConnHookEnable(boolean isEnable) {
+        setHookEnableState(Context.CONNECTIVITY_SERVICE,isEnable);
+        return this;
+    }
+
+    public PlayController setCellHookEnable(boolean isEnable) {
+        setHookEnableState(Context.TELEPHONY_SERVICE,isEnable);
+        return this;
+    }
+
+    private void setHookEnableState(String serviceName,boolean state){
+        ensureNoPlaying();
+        ensureIsManualMode();
+        PlayConfig.getInstance().getModuleStateMap().get(serviceName).isHookEnable = state;
+    }
+
+
 
     public PlayController setGpsMockFilePath(String filepath) {
         ensureNoPlaying();

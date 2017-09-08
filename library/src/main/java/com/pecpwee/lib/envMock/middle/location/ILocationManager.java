@@ -17,8 +17,8 @@ public class ILocationManager extends AbsIManager {
 
     AbsMiddleLocationManagerService middleLocationManagerService;
 
-    public ILocationManager(Object origBinderInterface) {
-        super(origBinderInterface);
+    public ILocationManager(Object origBinderInterface, String serviceName) {
+        super(origBinderInterface, serviceName);
         this.middleLocationManagerService = (AbsMiddleLocationManagerService) CenterServiceManager
                 .getInstance()
                 .getServiceFetcher(Context.LOCATION_SERVICE)
@@ -28,7 +28,7 @@ public class ILocationManager extends AbsIManager {
     //AIDL ADDRESS:
     //https://android.googlesource.com/platform/frameworks/base/+/master/location/java/android/location/ILocationManager.aidl
     @Override
-    public Object onInvoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public InvokeReturnObj onInvoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
 
         //Android L and Android M
@@ -36,42 +36,43 @@ public class ILocationManager extends AbsIManager {
 
             if (args.length == 4) {
                 middleLocationManagerService.requestLocationUpdates(args[0], args[1], (PendingIntent) args[2], (String) args[3]);
-                return null;
+                return new InvokeReturnObj(true, null);
             }
         } else if ("removeUpdates".equals(methodName)) {
             LogUtils.d("removeUpdates");
             if (args.length == 3) {
                 middleLocationManagerService.removeUpdates(args[0], (PendingIntent) args[1], (String) args[2]);
-                return null;
+                return new InvokeReturnObj(true, null);
             }
         } else if ("addGpsStatusListener".equals(methodName)) {
             if (args.length == 2) {
                 boolean b = middleLocationManagerService.addGpsStatusListener(args[0], (String) args[1]);
-                return b;
+                return new InvokeReturnObj(true, b);
+
             }
         } else if ("removeGpsStatusListener".equals(methodName)) {
             if (args.length == 2) {
                 middleLocationManagerService.removeGpsStatusListener(args[0]);
-                return null;
+                return new InvokeReturnObj(true, null);
             }
         }
 
         //7.0以上 addNmeaListener等都使用如下方法
         else if ("addGnssMeasurementsListener".equals(methodName)) {
             boolean b = middleLocationManagerService.addGnssMeasurementsListener(args[0], (String) args[1]);
-            return b;
+            return new InvokeReturnObj(true, b);
         } else if ("removeGnssMeasurementsListener".equals(methodName)) {
             middleLocationManagerService.removeGnssMeasurementsListener(args[0]);
-            return null;
+            return new InvokeReturnObj(true, null);
         } else if ("registerGnssStatusCallback".equals(methodName)) {//等同于addGpsStatus
             boolean b = middleLocationManagerService.registerGnssStatusCallback(args[0], (String) args[1]);
-            return b;
+            return new InvokeReturnObj(true, b);
         } else if ("unregisterGnssStatusCallback".equals(methodName)) {
             middleLocationManagerService.unregisterGnssStatusCallback(args[0]);
-            return null;
+            return new InvokeReturnObj(true, null);
         }
 
-        return method.invoke(interfaceBinder, args);//backup
+        return new InvokeReturnObj(false, null);//backup
 
     }
 }

@@ -43,8 +43,8 @@ public class LocationServiceFactory extends AbsServiceFetcher {
     }
 
     @Override
-    public InvocationHandler createProxyServiceBinder() {
-        return new ILocationManager(getOrigBinderProxyObj());
+    public InvocationHandler createProxyServiceBinder(String serviceName) {
+        return new ILocationManager(getOrigBinderProxyObj(), serviceName);
     }
 
 

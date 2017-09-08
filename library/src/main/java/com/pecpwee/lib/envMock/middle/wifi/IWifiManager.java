@@ -14,8 +14,8 @@ import java.lang.reflect.Method;
 public class IWifiManager extends AbsIManager {
     private MiddleWifiManagerService middleWifiManager;
 
-    public IWifiManager(Object interfaceBinder) {
-        super(interfaceBinder);
+    public IWifiManager(Object interfaceBinder, String serviceName) {
+        super(interfaceBinder, serviceName);
 
         this.middleWifiManager = (MiddleWifiManagerService) CenterServiceManager
                 .getInstance()
@@ -25,23 +25,23 @@ public class IWifiManager extends AbsIManager {
 
 
     @Override
-    public Object onInvoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public InvokeReturnObj onInvoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
 
         //List<ScanResult> getScanResults(String callingPackage);
         if ("getScanResults".equals(methodName)) {
             if (args.length == 1) {
-                return middleWifiManager.getScanResults((String) args[0]);
+                return new InvokeReturnObj(true, middleWifiManager.getScanResults((String) args[0]));
             }
         } else if ("getConnectionInfo".equals(methodName)) {
-            return middleWifiManager.getConnectionInfo();
+            return new InvokeReturnObj(true, middleWifiManager.getConnectionInfo());
         } else if ("startScan".equals(methodName)) {
             middleWifiManager.startScan(args[0], args[1]);
+            return new InvokeReturnObj(true, null);
             //只是作为激活播放。实际还是需要invoke系统
-
         }
 
-        return method.invoke(interfaceBinder, args);
+        return new InvokeReturnObj(false, null);
     }
 
 

@@ -102,7 +102,7 @@ public abstract class AbsServiceFetcher {
                             , IInterface.class
                             , getServiceInterfaceClass()
                             , InvocationListenerProvider.class}
-                    , createProxyServiceBinder());
+                    , createProxyServiceBinder(getServiceName()));
 
         }
         return mProxyServiceBinder;
@@ -139,7 +139,7 @@ public abstract class AbsServiceFetcher {
 
     public abstract Object createManagerObj(IBinder binder);
 
-    public abstract InvocationHandler createProxyServiceBinder();
+    public abstract InvocationHandler createProxyServiceBinder(String serviceName);
 
     public void install() {
         installOnCenterServiceManager();

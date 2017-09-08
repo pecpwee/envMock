@@ -1,5 +1,7 @@
 package com.pecpwee.lib.envMock.hook;
 
+import com.pecpwee.lib.envMock.PlayConfig;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -14,9 +16,11 @@ public abstract class AbsIManager implements InvocationHandler, InvocationListen
     protected Object interfaceBinder;
 
     public List<InvocationListener> mListenerList = new ArrayList<>();
+    public String mServiceName = null;
 
-    public AbsIManager(Object interfaceBinder) {
+    public AbsIManager(Object interfaceBinder, String serviceName) {
         this.interfaceBinder = interfaceBinder;
+        this.mServiceName = serviceName;
     }
 
     @Override
@@ -24,7 +28,17 @@ public abstract class AbsIManager implements InvocationHandler, InvocationListen
         for (InvocationListener listener : mListenerList) {
             listener.onMethodInvoke(proxy, method, args);
         }
-        return onInvoke(proxy, method, args);
+
+        if (PlayConfig.getInstance().getModuleStateMap().get(mServiceName).isHookEnable) {
+            InvokeReturnObj invokeReturnObj = onInvoke(proxy, method, args);
+            if (invokeReturnObj.hasInvoked){
+                return invokeReturnObj.returnObj;
+            }
+        }
+
+        return method.invoke(interfaceBinder, args);
+
+
     }
 
 
@@ -43,6 +57,15 @@ public abstract class AbsIManager implements InvocationHandler, InvocationListen
         mListenerList.clear();
     }
 
-    public abstract Object onInvoke(Object proxy, Method method, Object[] args) throws Throwable;
+    public abstract InvokeReturnObj onInvoke(Object proxy, Method method, Object[] args) throws Throwable;
 
+    protected static class InvokeReturnObj {
+        private boolean hasInvoked;
+        private Object returnObj;
+
+        public InvokeReturnObj(boolean hasInvoked, Object returnObj) {
+            this.hasInvoked = hasInvoked;
+            this.returnObj = returnObj;
+        }
+    }
 }

@@ -2,13 +2,9 @@ package com.pecpwee.lib.envMock.middle.connect;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.net.wifi.WifiManager;
 import android.os.IBinder;
-import android.telephony.TelephonyManager;
 
 import com.pecpwee.lib.envMock.hook.AbsServiceFetcher;
-import com.pecpwee.lib.envMock.middle.location.ILocationManager;
-import com.pecpwee.lib.envMock.middle.telephony.ITelephonyPlayerListener;
 import com.pecpwee.lib.envMock.player.AbsPlayer;
 import com.pecpwee.lib.envMock.player.connect.ConnPlayer;
 import com.pecpwee.lib.envMock.utils.LogUtils;
@@ -56,12 +52,11 @@ public class ConnectivityServiceFactory extends AbsServiceFetcher {
         return null;
 
 
-
     }
 
     @Override
-    public InvocationHandler createProxyServiceBinder() {
-        return new IConnectivityManager(getOrigBinderProxyObj());
+    public InvocationHandler createProxyServiceBinder(String serviceName) {
+        return new IConnectivityManager(getOrigBinderProxyObj(), serviceName);
     }
 
     @Override

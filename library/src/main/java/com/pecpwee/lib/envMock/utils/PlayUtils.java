@@ -1,4 +1,4 @@
-package com.pecpwee.lib.envMock.utils.reflect;
+package com.pecpwee.lib.envMock.utils;
 
 import com.pecpwee.lib.envMock.PlayConfig;
 import com.pecpwee.lib.envMock.hook.AbsServiceFetcher;
@@ -19,7 +19,7 @@ public class PlayUtils {
         AbsPlayer player = null;
         Set<String> ServiceNameSet = PlayConfig.getInstance().getModuleStateMap().keySet();
         for (String sName : ServiceNameSet) {
-            if (PlayConfig.getInstance().getModuleStateMap().get(sName)) {
+            if (PlayConfig.getInstance().getModuleStateMap().get(sName).isPlayEnable) {
                 player = CenterServiceManager.getInstance().getServiceFetcher(sName).getPlayer();
                 player.startPlay(time);
             }
