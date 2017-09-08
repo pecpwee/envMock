@@ -13,7 +13,7 @@ public class PlayConfig extends AbsConfig {
     private static PlayConfig CONFIG_INSTANCE;
     private Context context;
     private Looper looper;
-    private HashMap<String, Boolean> mModuleStateMap;
+    private HashMap<String, ModuleStateWrapper> mModuleStateMap;
 
 
     private boolean isAutoPlayMode = true;
@@ -40,10 +40,10 @@ public class PlayConfig extends AbsConfig {
 
     PlayConfig() {
         mModuleStateMap = new HashMap<>();
-        mModuleStateMap.put(Context.WIFI_SERVICE, true);
-        mModuleStateMap.put(Context.LOCATION_SERVICE, true);
-        mModuleStateMap.put(Context.TELEPHONY_SERVICE, true);
-        mModuleStateMap.put(Context.CONNECTIVITY_SERVICE, true);
+        mModuleStateMap.put(Context.WIFI_SERVICE, new ModuleStateWrapper());
+        mModuleStateMap.put(Context.LOCATION_SERVICE, new ModuleStateWrapper());
+        mModuleStateMap.put(Context.TELEPHONY_SERVICE, new ModuleStateWrapper());
+        mModuleStateMap.put(Context.CONNECTIVITY_SERVICE, new ModuleStateWrapper());
     }
 
     public Context getContext() {
@@ -54,7 +54,7 @@ public class PlayConfig extends AbsConfig {
         return looper;
     }
 
-    public HashMap<String, Boolean> getModuleStateMap() {
+    public HashMap<String, ModuleStateWrapper> getModuleStateMap() {
         return mModuleStateMap;
     }
 
@@ -135,7 +135,6 @@ public class PlayConfig extends AbsConfig {
             return this;
         }
 
-
         public Builder setAutoPlayMode(boolean isEnbale) {
             config.isAutoPlayMode = isEnbale;
             return this;
@@ -166,16 +165,66 @@ public class PlayConfig extends AbsConfig {
             return this;
         }
 
-        public Builder setConnMockFilePath(String filePath){
+        public Builder setConnMockFilePath(String filePath) {
             config.ConnRecordFilePath = filePath;
             return this;
         }
+
+        public Builder setWifiPlayerEnable(boolean isEnable) {
+            config.mModuleStateMap.get(Context.WIFI_SERVICE).isPlayEnable = isEnable;
+            return this;
+        }
+
+        public Builder setGpsPlayerEnable(boolean isEnable) {
+            config.mModuleStateMap.get(Context.LOCATION_SERVICE).isPlayEnable = isEnable;
+            return this;
+        }
+
+
+        public Builder setConnPlayerEnable(boolean isEnable) {
+            config.mModuleStateMap.get(Context.CONNECTIVITY_SERVICE).isPlayEnable = isEnable;
+            return this;
+
+        }
+
+        public Builder setCellPlayerEnable(boolean isEnable) {
+            config.mModuleStateMap.get(Context.TELEPHONY_SERVICE).isPlayEnable = isEnable;
+            return this;
+        }
+
+
+        public Builder setWifiHookEnable(boolean isEnable) {
+            config.mModuleStateMap.get(Context.WIFI_SERVICE).isHookEnable = isEnable;
+            return this;
+        }
+
+        public Builder setGpsHookEnable(boolean isEnable) {
+            config.mModuleStateMap.get(Context.LOCATION_SERVICE).isHookEnable = isEnable;
+            return this;
+        }
+
+
+        public Builder setConnHookEnable(boolean isEnable) {
+            config.mModuleStateMap.get(Context.CONNECTIVITY_SERVICE).isHookEnable = isEnable;
+            return this;
+
+        }
+
+        public Builder setCellHookEnable(boolean isEnable) {
+            config.mModuleStateMap.get(Context.TELEPHONY_SERVICE).isHookEnable = isEnable;
+            return this;
+        }
+
         public PlayConfig build() {
             return config;
         }
 
         //between 0 to 1.
+    }
 
+    public static class ModuleStateWrapper {
+        public boolean isPlayEnable = true;
+        public boolean isHookEnable = true;
     }
 
 }

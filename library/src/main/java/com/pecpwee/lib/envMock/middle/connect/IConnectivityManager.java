@@ -19,8 +19,8 @@ public class IConnectivityManager extends AbsIManager {
     private MiddleConnectivityManager middleConnectivityManager;
     private boolean isWifiConnect;
 
-    public IConnectivityManager(Object interfaceBinder) {
-        super(interfaceBinder);
+    public IConnectivityManager(Object interfaceBinder, String serviceName) {
+        super(interfaceBinder, serviceName);
         this.middleConnectivityManager = (MiddleConnectivityManager) CenterServiceManager
                 .getInstance()
                 .getServiceFetcher(Context.CONNECTIVITY_SERVICE)
@@ -45,36 +45,36 @@ public class IConnectivityManager extends AbsIManager {
     *
     * */
     @Override
-    public Object onInvoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public InvokeReturnObj onInvoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
         if (TextUtils.isEmpty(methodName)) {
             throw new RuntimeException("method name is null");
         }
         if ("getActiveNetwork".equals(methodName)) {
-            return middleConnectivityManager.getActiveNetwork();
+            return new InvokeReturnObj(true, middleConnectivityManager.getActiveNetwork());
         } else if ("getActiveNetworkForUid".equals(methodName)) {
-            return middleConnectivityManager.getActiveNetwork();
+            return new InvokeReturnObj(true, middleConnectivityManager.getActiveNetwork());
         } else if ("getActiveNetworkInfo".equals(methodName)) {
-            return middleConnectivityManager.getActiveNetworkInfo();
+            return new InvokeReturnObj(true, middleConnectivityManager.getActiveNetworkInfo());
         } else if ("getActiveNetworkInfoForUid".equals(methodName)) {
-            return middleConnectivityManager.getActiveNetworkInfo();
+            return new InvokeReturnObj(true, middleConnectivityManager.getActiveNetworkInfo());
         } else if ("getNetworkInfo".equals(methodName)) {
             if (args != null && args.length == 1) {
-                return middleConnectivityManager.getNetworkInfo((Integer) args[0]);
+                return new InvokeReturnObj(true, middleConnectivityManager.getNetworkInfo((Integer) args[0]));
             }
         } else if ("getNetworkInfoForUid".equals(methodName)) {
-            return middleConnectivityManager.getNetworkInfo((Network) args[0]);
+            return new InvokeReturnObj(true, middleConnectivityManager.getNetworkInfo((Network) args[0]));
         } else if ("getAllNetworkInfo".equals(methodName)) {
-            return middleConnectivityManager.getAllNetworkInfo();
+            return new InvokeReturnObj(true, middleConnectivityManager.getAllNetworkInfo());
         } else if ("getAllNetworks".equals(methodName)) {
-            return middleConnectivityManager.getAllNetworks();
+            return new InvokeReturnObj(true, middleConnectivityManager.getAllNetworks());
         } else if ("getDefaultNetworkCapabilitiesForUser".equals(methodName)) {
-            return middleConnectivityManager.getAllNetworkCapacities();
+            return new InvokeReturnObj(true, middleConnectivityManager.getAllNetworkCapacities());
         } else if ("getNetworkCapabilities".equals(methodName)) {
-            return middleConnectivityManager.getNetworkCapabilities((Network) args[0]);
+            return new InvokeReturnObj(true, middleConnectivityManager.getNetworkCapabilities((Network) args[0]));
         }
 
-        return method.invoke(interfaceBinder, args);
+        return new InvokeReturnObj(false, null);
 
     }
 }

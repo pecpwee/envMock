@@ -19,13 +19,12 @@ public class InjectApplication extends Application {
                 .setAutoPlayMode(true)
                 .setAutoStopMode(true)
                 .setBeginOffsetPercent(0.3f)
+//                .setConnHookEnable(false)
                 .build();
         EnvMockInstaller.installPlayService(playConfig);
         RecordConfig recordConfig = new RecordConfig.Builder(this)
                 .setSampleInterval(5000L)
                 .build();
         EnvMockInstaller.installRecordService(recordConfig);
-
-
     }
 }

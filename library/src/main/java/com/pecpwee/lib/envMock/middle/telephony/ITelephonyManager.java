@@ -15,8 +15,8 @@ public class ITelephonyManager extends AbsIManager {
 
     MiddleTelephonyManagerService middleTelephonyManagerService;
 
-    public ITelephonyManager(Object origBinderInterface) {
-        super(origBinderInterface);
+    public ITelephonyManager(Object origBinderInterface, String serviceName) {
+        super(origBinderInterface, serviceName);
 
         this.middleTelephonyManagerService = (MiddleTelephonyManagerService) CenterServiceManager
                 .getInstance()
@@ -26,13 +26,13 @@ public class ITelephonyManager extends AbsIManager {
     }
 
     @Override
-    public Object onInvoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public InvokeReturnObj onInvoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
         if ("getCellLocation".equals(methodName)) {
-            return middleTelephonyManagerService.getCellLocation();
+            return new InvokeReturnObj(true, middleTelephonyManagerService.getCellLocation());
         } else if ("getNetworkType".equals(methodName)) {
-            return middleTelephonyManagerService.getNetworkType();
+            return new InvokeReturnObj(true, middleTelephonyManagerService.getNetworkType());
         }
-        return method.invoke(interfaceBinder, args);
+        return new InvokeReturnObj(false, null);
     }
 }

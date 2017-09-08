@@ -41,8 +41,8 @@ public class TelephonyServiceFactory extends AbsServiceFetcher {
     }
 
     @Override
-    public InvocationHandler createProxyServiceBinder() {
-        return new ITelephonyManager(getOrigBinderProxyObj());
+    public InvocationHandler createProxyServiceBinder(String serviceName) {
+        return new ITelephonyManager(getOrigBinderProxyObj(), serviceName);
     }
 
     @Override
