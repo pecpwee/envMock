@@ -56,20 +56,24 @@ public class IGnssStatusListenerWrapper extends AbsClassWrapper {
 
     }
 
-//    //适配7以下的onSvStatusChanged方法，最后三个参数没有用到
-//    public void onSvStatusChanged(int svCount, int[] prns, float[] snrs,
-//                                  float[] elevations, float[] azimuths, int ephemerisMask,
-//                                  int almanacMask, int usedInFixMask) {
-//        this.onSvStatusChanged(svCount, prns, snrs, elevations, azimuths);
-//    }
-
+    /*
+    * Android Oreo:
+    * public void onSvStatusChanged(int svCount, int[] prnWithFlags,float[] cn0s, float[] elevations, float[] azimuths, float[] carrierFreqs) {
+    *
+    * Android N:
+    * public void onSvStatusChanged(int svCount, int[] prns, float[] snrs, float[] elevations, float[] azimuths)
+    *
+    * Below Android N:
+    * public void onSvStatusChanged(int svCount, int[] prns, float[] snrs, float[] elevations, float[] azimuths
+    *                               , int ephemerisMask,int almanacMask, int usedInFixMask)
+    *
+    * */
     public void onSvStatusChanged(int svCount, int[] prnWithFlags,
                                   float[] cn0s, float[] elevations, float[] azimuths) {
         try {
             Method[] method = baseObj.getClass().getMethods();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                // TODO: 2017/6/20 等待O源码发布之后修改。这里比N版本多了一个float[]参数
-                MethodUtils.invokeMethod(baseObj, "onSvStatusChanged", svCount, prnWithFlags, cn0s, elevations, azimuths, new float[1]);
+                MethodUtils.invokeMethod(baseObj, "onSvStatusChanged", svCount, prnWithFlags, cn0s, elevations, azimuths, new float[1]);// TODO: 2017/9/21  
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 MethodUtils.invokeMethod(baseObj, "onSvStatusChanged", svCount, prnWithFlags, cn0s, elevations, azimuths);
             }
