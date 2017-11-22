@@ -15,6 +15,25 @@ import java.util.HashMap;
 
 /**
  * Created by pw on 2017/9/4.
+ *
+ * * http://androidxref.com/7.1.1_r6/xref/frameworks/base/core/java/android/net/IConnectivityManager.aidl
+ *
+ *    /*
+ * 46    Network getActiveNetwork();
+ 47    Network getActiveNetworkForUid(int uid, boolean ignoreBlocked);
+ 48    NetworkInfo getActiveNetworkInfo();
+ 49    NetworkInfo getActiveNetworkInfoForUid(int uid, boolean ignoreBlocked);
+
+ 50    NetworkInfo getNetworkInfo(int networkType);
+ 51    NetworkInfo getNetworkInfoForUid(in Network network, int uid, boolean ignoreBlocked);
+ 52    NetworkInfo[] getAllNetworkInfo();
+ 53    Network getNetworkForType(int networkType);
+ 54    Network[] getAllNetworks();
+ 55    NetworkCapabilities[] getDefaultNetworkCapabilitiesForUser(int userId);
+
+ *
+
+
  */
 
 public class MiddleConnectivityManager implements IMiddleService, IConnectivityListener {

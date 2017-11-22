@@ -2,7 +2,6 @@ package com.pecpwee.lib.envMock.recorder.telephony;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 
 import com.pecpwee.lib.envMock.AbsConfig;
 import com.pecpwee.lib.envMock.RecordConfig;
@@ -24,10 +23,14 @@ public class TelephonyRecorder extends AbsRecorder {
     private TimerJob cellTimedJob = new TimerJob();
 
     private Context context;
+    private Object mOrigBinderObj;
 
     public TelephonyRecorder(Context context) {
         this.context = context;
-        final TelephonyManager telephonyManager = (TelephonyManager) CenterServiceManager.getInstance().getServiceFetcher(Context.TELEPHONY_SERVICE).getOrigManagerObj();
+        mOrigBinderObj = CenterServiceManager
+                .getInstance()
+                .getServiceFetcher(Context.TELEPHONY_SERVICE)
+                .getOrigBinderProxyObj();
 
         cellTimedJob.setInterval(RecordConfig.getInstance().getSampleInterval())
                 .setRunnable(new Runnable() {
@@ -35,23 +38,32 @@ public class TelephonyRecorder extends AbsRecorder {
                     public void run() {
                         Bundle bundle = TelephonyRecorder.this.getCellLocation();
                         doRecord(new GetCellLocation(bundle));
-                        doRecord(new GetNetworkType(telephonyManager.getNetworkType()));
-
+                        doRecord(new GetNetworkType(getNetworkType()));
                     }
                 });
     }
 
+    public int getNetworkType() {
+        try {
+            return (int) MethodUtils.invokeMethod(mOrigBinderObj, "getNetworkType");
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return -10;
+    }
+
     public Bundle getCellLocation() {
-        Object origInterfaceBinderObj = CenterServiceManager
-                .getInstance()
-                .getServiceFetcher(Context.TELEPHONY_SERVICE)
-                .getOrigBinderProxyObj();
+
         Bundle bundle = null;
         try {
-            bundle = (Bundle) MethodUtils.invokeMethod(origInterfaceBinderObj, "getCellLocation", context.getPackageName());//6.0及以上
+            bundle = (Bundle) MethodUtils.invokeMethod(mOrigBinderObj, "getCellLocation", context.getPackageName());//6.0及以上
         } catch (NoSuchMethodException e) {
             try {
-                bundle = (Bundle) MethodUtils.invokeMethod(origInterfaceBinderObj, "getCellLocation");//5.0
+                bundle = (Bundle) MethodUtils.invokeMethod(mOrigBinderObj, "getCellLocation");//5.0
             } catch (NoSuchMethodException e1) {
                 e1.printStackTrace();
             } catch (IllegalAccessException e1) {

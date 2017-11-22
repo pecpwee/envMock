@@ -74,13 +74,6 @@ public class WifiServiceFactory extends AbsServiceFetcher {
 
     }
 
-
-    @Override
-    public InvocationHandler createProxyServiceBinder(String serviceName) {
-        return new IWifiManager(getOrigBinderProxyObj(),serviceName);
-    }
-
-
     @Override
     public AbsPlayer createPlayer() {
         WifiPlayer wifiPlayer = new WifiPlayer((IWifiPlayerListener) getMiddleManagerService());

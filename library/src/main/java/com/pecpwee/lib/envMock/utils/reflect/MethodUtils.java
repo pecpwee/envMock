@@ -44,6 +44,9 @@ public class MethodUtils {
         sb.append(cls.toString()).append("#").append(methodName);
         if (parameterTypes != null && parameterTypes.length > 0) {
             for (Class<?> parameterType : parameterTypes) {
+                if (parameterType == null){
+                    continue;
+                }
                 sb.append(parameterType.toString()).append("#");
             }
         } else {

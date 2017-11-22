@@ -10,7 +10,6 @@ import com.pecpwee.lib.envMock.player.connect.ConnPlayer;
 import com.pecpwee.lib.envMock.utils.LogUtils;
 import com.pecpwee.lib.envMock.utils.reflect.MethodUtils;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -54,10 +53,7 @@ public class ConnectivityServiceFactory extends AbsServiceFetcher {
 
     }
 
-    @Override
-    public InvocationHandler createProxyServiceBinder(String serviceName) {
-        return new IConnectivityManager(getOrigBinderProxyObj(), serviceName);
-    }
+
 
     @Override
     protected Object createMiddleManagerService() {

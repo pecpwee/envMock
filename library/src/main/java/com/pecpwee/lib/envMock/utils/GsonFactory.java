@@ -1,6 +1,8 @@
 package com.pecpwee.lib.envMock.utils;
 
+import android.net.NetworkSpecifier;
 import android.net.wifi.ScanResult;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Pair;
@@ -38,7 +40,7 @@ public class GsonFactory {
         }
     }
 
-    public static class ScanResultStrategy implements ExclusionStrategy {
+    private static class ScanResultStrategy implements ExclusionStrategy {
 
         public boolean shouldSkipClass(Class<?> arg0) {
             return false;
@@ -60,15 +62,31 @@ public class GsonFactory {
 //            //get ride of bundle directly
 //            return (f.getDeclaringClass() == Location.class && f.getName().equals("mExtras")) ||
 //                    (f.getDeclaringClass() == OnStatusChanged.class && f.getName().equals("extras"));
-
         }
     }
 
+    private static class ConnStrategy implements ExclusionStrategy {
+
+        public boolean shouldSkipClass(Class<?> arg0) {
+            return false;
+        }
+
+        public boolean shouldSkipField(FieldAttributes f) {
+            boolean shouldSkip = false;
+            if (f.getName().equals("mNetworkSpecifier")) {
+                return true;
+            }
+            return shouldSkip;
+        }
+    }
 
     public static Gson getGson() {
         if (gsonInstance == null) {
             gsonInstance = new GsonBuilder()
                     .addSerializationExclusionStrategy(new ScanResultStrategy())
+                    .addSerializationExclusionStrategy(new ConnStrategy())
+                    .addDeserializationExclusionStrategy(new ScanResultStrategy())
+                    .addDeserializationExclusionStrategy(new ConnStrategy())
                     .registerTypeAdapterFactory(new BundleTypeAdapterFactory())
 //                    .addSerializationExclusionStrategy(new NoBundleGsonStrategy())
 //                    .addDeserializationExclusionStrategy(new NoBundleGsonStrategy())

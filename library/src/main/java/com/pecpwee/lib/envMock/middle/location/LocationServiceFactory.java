@@ -10,7 +10,6 @@ import com.pecpwee.lib.envMock.player.AbsPlayer;
 import com.pecpwee.lib.envMock.player.location.GpsPlayer;
 import com.pecpwee.lib.envMock.utils.reflect.MethodUtils;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -41,12 +40,6 @@ public class LocationServiceFactory extends AbsServiceFetcher {
         }
         return null;
     }
-
-    @Override
-    public InvocationHandler createProxyServiceBinder(String serviceName) {
-        return new ILocationManager(getOrigBinderProxyObj(), serviceName);
-    }
-
 
     @Override
     public Object createMiddleManagerService() {

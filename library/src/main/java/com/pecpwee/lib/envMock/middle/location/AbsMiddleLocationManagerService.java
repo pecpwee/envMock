@@ -168,21 +168,15 @@ public abstract class AbsMiddleLocationManagerService implements IGpsPlayerListe
 
     }
 
+    //7.0 and above
     public boolean addGnssMeasurementsListener(Object IGnssMeasurementsListener, String packageName) {
         throw new RuntimeException("method have not implement");
 
     }
 
-
     public void removeGnssMeasurementsListener(Object IGnssMeasurementsListener) {
         throw new RuntimeException("method have not implement");
     }
-
-    @Override
-    public void onFirstFix(int ttff) {
-        throw new RuntimeException("method have not implement");
-    }
-
 
     public boolean registerGnssStatusCallback(Object IGnssStatusListener, String packageName) {
         throw new RuntimeException("method have not implement");
@@ -192,6 +186,10 @@ public abstract class AbsMiddleLocationManagerService implements IGpsPlayerListe
         throw new RuntimeException("method have not implement");
     }
 
+    @Override
+    public void onFirstFix(int ttff) {
+        throw new RuntimeException("method have not implement");
+    }
 
     @Override
     public void onNmeaReceived(final long timestamp, final String nmea) {

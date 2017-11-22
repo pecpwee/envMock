@@ -9,7 +9,6 @@ import com.pecpwee.lib.envMock.player.AbsPlayer;
 import com.pecpwee.lib.envMock.player.telephony.TelephonyPlayer;
 import com.pecpwee.lib.envMock.utils.reflect.MethodUtils;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -21,7 +20,6 @@ public class TelephonyServiceFactory extends AbsServiceFetcher {
     public TelephonyServiceFactory(Context context) {
         super(context);
     }
-
 
     @Override
     public Object createManagerObj(IBinder binder) {
@@ -41,8 +39,8 @@ public class TelephonyServiceFactory extends AbsServiceFetcher {
     }
 
     @Override
-    public InvocationHandler createProxyServiceBinder(String serviceName) {
-        return new ITelephonyManager(getOrigBinderProxyObj(), serviceName);
+    public Object getOrigManagerObj() {
+        throw new RuntimeException("cannot retrive original manager of the service:" + getServiceName());
     }
 
     @Override

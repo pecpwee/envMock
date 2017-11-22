@@ -69,7 +69,7 @@ public abstract class AbsServiceFetcher {
     }
 
     //返回xxxxManager对象，例如LocationManager,这个是未被hook过的原始对象
-    public final Object getOrigManagerObj() {
+    public Object getOrigManagerObj() {
 
         if (mOrigManager == null) {
             mOrigManager = createManagerObj(getOrigServiceBinder());
@@ -139,7 +139,9 @@ public abstract class AbsServiceFetcher {
 
     public abstract Object createManagerObj(IBinder binder);
 
-    public abstract InvocationHandler createProxyServiceBinder(String serviceName);
+    public final InvocationHandler createProxyServiceBinder(String serviceName) {
+        return new MiddleServiceBinder(getOrigBinderProxyObj(), serviceName);
+    }
 
     public void install() {
         installOnCenterServiceManager();
