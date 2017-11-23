@@ -19,6 +19,7 @@ public class InjectApplication extends Application {
                 .setAutoPlayMode(true)
                 .setAutoStopMode(true)
                 .setBeginOffsetPercent(0.3f)
+                .setDebugEnable(true)
 //                .setConnHookEnable(false)
                 .build();
         EnvMockInstaller.installPlayService(playConfig);
