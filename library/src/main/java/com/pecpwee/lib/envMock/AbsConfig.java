@@ -20,4 +20,6 @@ public class AbsConfig {
             + "/" + "TelephonyRecord.log";
     public static final String DEFAULT_FILEPATH_CONN = DEFAULT_RECORD_DIR_PATH
             + "/" + "ConnRecord.log";
+
+    public boolean isDebug = false;
 }

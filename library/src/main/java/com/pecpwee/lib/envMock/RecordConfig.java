@@ -12,7 +12,7 @@ public class RecordConfig extends AbsConfig {
     private Context context;
     private Looper looper;
     private long SAMPLE_INTERVAL = 5 * 1000L;
-    private int WIFI_SCAN_RECORD_COUNT_UPPER_LIMIT = 5;
+    private int WIFI_SCAN_RECORD_COUNT_UPPER_LIMIT = 10;
 
     public static RecordConfig getInstance() {
         return CONFIG_INSTANCE;
@@ -71,6 +71,11 @@ public class RecordConfig extends AbsConfig {
 
         public Builder setSampleInterval(long interval) {
             config.SAMPLE_INTERVAL = interval;
+            return this;
+        }
+
+        public Builder setDebugEnable(boolean isDebug) {
+            config.isDebug = isDebug;
             return this;
         }
 

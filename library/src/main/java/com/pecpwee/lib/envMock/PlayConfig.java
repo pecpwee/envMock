@@ -120,7 +120,6 @@ public class PlayConfig extends AbsConfig {
     public static class Builder {
         private PlayConfig config;
 
-
         public Builder(Context context) {
             if (context == null) {
                 throw new IllegalArgumentException("parameters should not be null");
@@ -215,11 +214,15 @@ public class PlayConfig extends AbsConfig {
             return this;
         }
 
+
+        public Builder setDebugEnable(boolean isDebug) {
+            config.isDebug = isDebug;
+            return this;
+        }
+
         public PlayConfig build() {
             return config;
         }
-
-        //between 0 to 1.
     }
 
     public static class ModuleStateWrapper {
