@@ -27,7 +27,7 @@ The App will receive the GPS callback, or get a recording Wi-Fi and Cell when th
 ### Add Dependency
 It has been published to Jcenter repository
 ```
-compile 'com.pecpwee.lib.envMock:library:1.2.0'
+compile 'com.pecpwee.lib.envMock:library:1.3.8'
 ```
 
 ### Init
