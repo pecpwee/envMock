@@ -1,5 +1,7 @@
 # EnvMock
 
+[![Join the chat at https://gitter.im/envMock/Lobby](https://badges.gitter.im/envMock/Lobby.svg)](https://gitter.im/envMock/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [ ![Download](https://api.bintray.com/packages/pecpwee/envMock/envMock/images/download.svg) ](https://bintray.com/pecpwee/envMock/envMock/_latestVersion)
 
 ## Introduce
