@@ -3,9 +3,9 @@ package com.pecpwee.test.envMock;
 import android.app.Application;
 import android.content.Context;
 
-import com.pecpwee.lib.envMock.EnvMockInstaller;
-import com.pecpwee.lib.envMock.PlayConfig;
-import com.pecpwee.lib.envMock.RecordConfig;
+import com.pecpwee.lib.envmock.EnvMockInstaller;
+import com.pecpwee.lib.envmock.PlayConfig;
+import com.pecpwee.lib.envmock.RecordConfig;
 
 /**
  * Created by pw on 2017/6/2.

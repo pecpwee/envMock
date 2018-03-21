@@ -7,8 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.pecpwee.lib.envMock.RecordController;
-import com.pecpwee.lib.envMock.recorder.AbsRecorder;
+import com.pecpwee.lib.envmock.RecordController;
+import com.pecpwee.lib.envmock.recorder.AbsRecorder;
 
 import java.util.ArrayList;
 

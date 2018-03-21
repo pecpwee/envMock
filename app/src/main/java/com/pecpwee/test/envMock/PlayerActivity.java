@@ -27,8 +27,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.pecpwee.lib.envMock.utils.LogUtils;
-import com.pecpwee.lib.envMock.utils.TimerJob;
+import com.pecpwee.lib.envmock.utils.LogUtils;
+import com.pecpwee.lib.envmock.utils.TimerJob;
 
 import java.util.Iterator;
 import java.util.List;
