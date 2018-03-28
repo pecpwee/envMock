@@ -1,7 +1,5 @@
 package com.pecpwee.lib.envmock.player;
 
-import android.text.TextUtils;
-
 import com.pecpwee.lib.envmock.utils.LogUtils;
 
 import java.io.BufferedReader;
@@ -50,19 +48,19 @@ public class PlayerDataSource {
         return mTimedActionsList.get(index);
     }
 
-    public synchronized void loadDataIfNeed(String path, ILineDataParser parser) {
+    public synchronized void loadDataIfNeed(File file, ILineDataParser parser) throws FileNotFoundException {
         if (isDataLoadedOk) {
             return;
         }
         mTimedActionsList.clear();
-        doLoadData(new File(path), parser);
+        doLoadData(file, parser);
         isDataLoadedOk = true;
     }
 
-    private void doLoadData(File file, ILineDataParser parser) {
+    private void doLoadData(File file, ILineDataParser parser) throws FileNotFoundException {
         FileInputStream fis = null;
         if (!file.exists()) {
-            throw new RuntimeException("cannot find mock data file");
+            throw new FileNotFoundException("cannot find mock data file");
         }
         mTimedActionsList.clear();
         LogUtils.d(getClass().getSimpleName() + " loading data from" + file.getAbsolutePath());

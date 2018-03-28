@@ -8,6 +8,7 @@ import com.amap.api.maps.model.LatLng;
 import com.pecpwee.lib.envmock.PlayController;
 import com.pecpwee.lib.envmock.utils.LogUtils;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +31,16 @@ public class MainPannelRepository {
     }
 
     public List<LatLng> getPathList() {
-        List<Location> locationList = PlayController.getInstance().getCompletePlayPathLocations();
-        LogUtils.d("getPathList" + locationList.size());
+        List<Location> locationList = null;
+        try {
+            locationList = PlayController.getInstance().getCompletePlayPathLocations();
+        } catch (FileNotFoundException e) {
+        }
+        if (locationList == null){
+            return null;
+        }
+
+        LogUtils.d("getPathList:" + locationList.size());
         List<LatLng> latLngs = new ArrayList();
         for (Location location : locationList) {
             latLngs.add(convert2AmapLoc(location));

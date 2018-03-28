@@ -28,9 +28,10 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-//    implementation project(':library')
     implementation 'com.amap.api:3dmap:6.0.1'
-    implementation 'com.pecpwee.lib.envMock:library:1.5.1'
+    implementation project(':library')
+//    implementation 'com.pecpwee.lib.envMock:library:1.5.1'
+
 //
 
 }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
@@ -24,6 +25,7 @@ import com.amap.api.maps.model.PolylineOptions;
 import com.pecpwee.lib.envmock.PlayController;
 import com.pecpwee.lib.envmock.utils.TimerJob;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
@@ -55,7 +57,7 @@ public class MainPannelFragment extends DialogFragment {
 
         getDialog().setCancelable(false);
         getDialog().setCanceledOnTouchOutside(false);
-        View view = inflater.inflate(R.layout.sample_main_panel_view, container, false);
+        View view = inflater.inflate(R.layout.fragment_main_panel, container, false);
         btnStart = view.findViewById(R.id.btn_start);
         btnStop = view.findViewById(R.id.btn_stop);
         btnHide = view.findViewById(R.id.btn_hide);
@@ -111,7 +113,12 @@ public class MainPannelFragment extends DialogFragment {
 
     private void goStartState() {
         if (!PlayController.getInstance().isPlaying()) {
-            PlayController.getInstance().startPlay();
+            try {
+                PlayController.getInstance().startPlay();
+            } catch (FileNotFoundException e) {
+                Toast.makeText(this.getActivity(), "no envMock data file founded, please record some data firstly", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
         setStartUI();
     }
@@ -202,7 +209,6 @@ public class MainPannelFragment extends DialogFragment {
             this.setCurrentLocationOnMap(PlayController.getInstance().getLastPlayedLocation());
         }
     }
-
 
     private void setCurrentLocationOnMap(Location location) {
         if (location == null) {

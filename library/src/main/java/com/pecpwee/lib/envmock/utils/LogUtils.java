@@ -29,6 +29,14 @@ public class LogUtils {
         Log.d(TAG, "exception", t);
     }
 
+    public static void e(String message) {
+        if (!isLogEnable()) {
+            return;
+        }
+        Log.e(TAG, message);
+    }
+
+
     private static boolean isLogEnable() {
         PlayConfig playConfig = PlayConfig.getInstance();
         if (playConfig != null && playConfig.isDebug) {

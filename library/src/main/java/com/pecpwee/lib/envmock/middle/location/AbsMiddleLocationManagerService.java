@@ -14,6 +14,7 @@ import com.pecpwee.lib.envmock.middle.location.LM.RequestLocationWrapper;
 import com.pecpwee.lib.envmock.player.PlayerManager;
 import com.pecpwee.lib.envmock.utils.LogUtils;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 /**
@@ -48,7 +49,11 @@ public abstract class AbsMiddleLocationManagerService implements IGpsPlayerListe
         LogUtils.d(TAG + "requestLocationUpdates");
 
         if (mRequestLocationList.size() == 1 && PlayConfig.getInstance().isAutoPlayMode()) {
-            PlayerManager.doStartPlay();
+            try {
+                PlayerManager.doStartPlay();
+            } catch (FileNotFoundException e) {
+                LogUtils.d(e.getMessage());
+            }
         }
     }
 

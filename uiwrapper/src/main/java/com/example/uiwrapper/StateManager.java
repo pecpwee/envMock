@@ -70,7 +70,6 @@ public class StateManager {
     }
 
     public void showMainWindow() {
-        Toast.makeText(currentActivity, "clicked", Toast.LENGTH_SHORT).show();
         if (mainFragment == null) {
             mainFragment = new MainPannelFragment();
         }

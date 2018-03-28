@@ -9,7 +9,8 @@ import com.pecpwee.lib.envmock.model.CONST;
 import com.pecpwee.lib.envmock.utils.LogUtils;
 import com.pecpwee.lib.envmock.utils.ThreadManager;
 
-import java.util.concurrent.CountDownLatch;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 /**
  * Created by pw on 2017/6/12.
@@ -29,7 +30,6 @@ public abstract class AbsPlayer<T> {
     private long mFileRecordStartTime;
     private long mFileRecordStopTime;
     private long mAcutalStartPastTimestamp;
-    private CountDownLatch latchLock = null;
 
 
     private Handler workHandler = new Handler(ThreadManager.PLAY_LOOPER);
@@ -67,32 +67,46 @@ public abstract class AbsPlayer<T> {
         mDataSource.addTimedAction(timeRunnable);
     }
 
-    public final synchronized void startPlay(long startBaseTime) {
+    public final synchronized void startPlay(long startBaseTime) throws FileNotFoundException {
 
         isNeedNextAction = true;
         this.mCurrentStartTime = startBaseTime;
         this.mStartPlayOffset = PlayConfig.getInstance().getStartPlayPercentage();
-        this.latchLock = new CountDownLatch(1);
-        workHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                tryLoadData();
-                dealWithPlayOffset();
-                scheduleAction(mCurrentTimedActionIndex);
-                latchLock.countDown();
-            }
-        });
+
+        tryLoadData();
+        dealWithPlayOffset();
+        scheduleAction(mCurrentTimedActionIndex);
+
         LogUtils.d(getClass().getSimpleName() + "doStartPlay");
 
     }
 
-    public void tryLoadData() {
+    public boolean isSourceFileReady() {
+        File file = getDataSourceFile();
+        if (file != null && file.exists()) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public void tryLoadData() throws FileNotFoundException {
+        File file = getDataSourceFile();
+
+        mDataSource.loadDataIfNeed(file, getParser());
+    }
+
+
+    private File getDataSourceFile() {
         String path = getConfigFilePath();
         if (TextUtils.isEmpty(path)) {
             path = getDefaultFilePath();
         }
-        mDataSource.loadDataIfNeed(path, getParser());
+        File file = new File(path);
+        return file;
+
     }
+
 
     public boolean isDataLoadedOK() {
         return mDataSource.isDataLoadedOk();
@@ -163,13 +177,6 @@ public abstract class AbsPlayer<T> {
     }
 
     public final synchronized void stopPlay() {
-        if (latchLock != null) {
-            try {
-                latchLock.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         isNeedNextAction = false;
         mainHandler.removeMessages(HANDLER_DO_PLAY);
         LogUtils.d(getClass().getSimpleName() + "doStopPlay");

@@ -7,6 +7,7 @@ import com.pecpwee.lib.envmock.hook.CenterServiceManager;
 import com.pecpwee.lib.envmock.player.PlayerManager;
 import com.pecpwee.lib.envmock.utils.LogUtils;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
@@ -57,11 +58,11 @@ public class PlayController {
     }
 
 
-    public synchronized List<Location> getCompletePlayPathLocations() {
+    public synchronized List<Location> getCompletePlayPathLocations() throws FileNotFoundException {
         return PlayerManager.getCompletePlayPathLocations();
     }
 
-    public synchronized void startPlay() {
+    public synchronized void startPlay() throws FileNotFoundException {
         if (isPlaying) {
             throw new RuntimeException("you are playing!you should stop the replay before you call play method again");
         }
