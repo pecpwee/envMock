@@ -11,6 +11,7 @@ import com.pecpwee.lib.envmock.hook.CenterServiceManager;
 import com.pecpwee.lib.envmock.model.wifi.GetConnectionInfo;
 import com.pecpwee.lib.envmock.model.wifi.GetScanResult;
 import com.pecpwee.lib.envmock.recorder.AbsRecorder;
+import com.pecpwee.lib.envmock.utils.LogUtils;
 import com.pecpwee.lib.envmock.utils.TimerJob;
 
 import java.util.Collections;

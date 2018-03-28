@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<com.example.uiwrapper.FloatView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/image_floating_icon"
+    android:layout_width="50dp"
+    android:layout_height="50dp"
+    android:maxHeight="50dp"
+    android:maxWidth="50dp"
+    android:src="@drawable/icon_floating" />

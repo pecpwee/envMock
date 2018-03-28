@@ -6,6 +6,7 @@ import com.pecpwee.lib.envmock.model.telephony.CONST;
 import com.pecpwee.lib.envmock.model.telephony.GetCellLocation;
 import com.pecpwee.lib.envmock.model.telephony.GetNetworkType;
 import com.pecpwee.lib.envmock.player.AbsPlayer;
+import com.pecpwee.lib.envmock.player.ILineDataParser;
 import com.pecpwee.lib.envmock.utils.GsonFactory;
 import com.pecpwee.lib.envmock.utils.TimerJob;
 
@@ -14,8 +15,6 @@ import com.pecpwee.lib.envmock.utils.TimerJob;
  */
 
 public class TelephonyPlayer extends AbsPlayer<ITelephonyPlayerListener> {
-
-    private TimerJob wifiTimer = new TimerJob();
 
     public TelephonyPlayer(ITelephonyPlayerListener listener) {
         super(listener);

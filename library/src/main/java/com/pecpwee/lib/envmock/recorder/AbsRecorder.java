@@ -6,6 +6,7 @@ import com.pecpwee.lib.envmock.PlayConfig;
 import com.pecpwee.lib.envmock.model.AbsTimeModel;
 import com.pecpwee.lib.envmock.model.CONST;
 import com.pecpwee.lib.envmock.utils.GsonFactory;
+import com.pecpwee.lib.envmock.utils.LogUtils;
 import com.pecpwee.lib.envmock.utils.ThreadManager;
 
 import java.io.BufferedOutputStream;
@@ -14,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -21,9 +23,11 @@ import java.util.concurrent.CountDownLatch;
  */
 
 public abstract class AbsRecorder {
+    private static final String TAG = "AbsRecorder ";
     protected File mFile;
     private StringBuilder sb = new StringBuilder();
     private CountDownLatch latchlock = null;
+    private ArrayList<RecordListener> listeners = new ArrayList<>();
 
     public final void start() {
         if (latchlock != null) {
@@ -60,6 +64,14 @@ public abstract class AbsRecorder {
         this.mFile = new File(filePath);
     }
 
+    public void addRecordListener(RecordListener recordListener) {
+        this.listeners.add(recordListener);
+    }
+
+    public void removeRecordListener(RecordListener listener) {
+        this.listeners.remove(listener);
+    }
+
     private void storeRecord(final File file, final StringBuilder sb) {
 
         ThreadManager.RECORD_HANDLER.post(new Runnable() {
@@ -94,8 +106,16 @@ public abstract class AbsRecorder {
 
 
     protected void doRecord(AbsTimeModel obj) {
-
+        LogUtils.d(TAG + "doRecord " + obj.getClass().getSimpleName());
+        notifyNewRecord(obj);
         doRecord(obj.getType(), GsonFactory.getGson().toJson(obj));
+    }
+
+
+    private void notifyNewRecord(AbsTimeModel obj) {
+        for (RecordListener listener : listeners) {
+            listener.onRecordNew(obj);
+        }
     }
 
     public static void writeSDCardFile(File file, String content, boolean append) {

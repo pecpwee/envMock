@@ -39,6 +39,7 @@ public class EnvMockInstaller {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             return false;
         }
+
         RecordConfig.setConfigInstance(config);
         ensureCenterServiceInstalled(config.getContext());
         ThreadManager.RECORD_LOOPER = config.getLooper();

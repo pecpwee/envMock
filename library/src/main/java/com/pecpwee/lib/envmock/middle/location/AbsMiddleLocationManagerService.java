@@ -11,8 +11,8 @@ import com.pecpwee.lib.envmock.middle.IMiddleService;
 import com.pecpwee.lib.envmock.middle.location.LM.ListenerTransportWrapper;
 import com.pecpwee.lib.envmock.middle.location.LM.LocationRequestWrapper;
 import com.pecpwee.lib.envmock.middle.location.LM.RequestLocationWrapper;
+import com.pecpwee.lib.envmock.player.PlayerManager;
 import com.pecpwee.lib.envmock.utils.LogUtils;
-import com.pecpwee.lib.envmock.utils.PlayUtils;
 
 import java.util.ArrayList;
 
@@ -48,7 +48,7 @@ public abstract class AbsMiddleLocationManagerService implements IGpsPlayerListe
         LogUtils.d(TAG + "requestLocationUpdates");
 
         if (mRequestLocationList.size() == 1 && PlayConfig.getInstance().isAutoPlayMode()) {
-            PlayUtils.doStartPlay();
+            PlayerManager.doStartPlay();
         }
     }
 
@@ -61,7 +61,7 @@ public abstract class AbsMiddleLocationManagerService implements IGpsPlayerListe
 
         LogUtils.d("removeUpdates,now the size:" + mRequestLocationList.size());
         if (mRequestLocationList.size() == 0 && PlayConfig.getInstance().isAutoStopMode()) {
-            PlayUtils.doStopPlay();
+            PlayerManager.doStopPlay();
         }
     }
 

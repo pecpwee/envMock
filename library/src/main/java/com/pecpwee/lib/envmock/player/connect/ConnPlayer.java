@@ -6,6 +6,7 @@ import com.pecpwee.lib.envmock.model.connect.CONST;
 import com.pecpwee.lib.envmock.model.connect.GetActiveNetwork;
 import com.pecpwee.lib.envmock.model.connect.GetAllNetworks;
 import com.pecpwee.lib.envmock.player.AbsPlayer;
+import com.pecpwee.lib.envmock.player.ILineDataParser;
 import com.pecpwee.lib.envmock.utils.GsonFactory;
 
 /**

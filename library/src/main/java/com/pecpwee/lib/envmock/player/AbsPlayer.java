@@ -9,13 +9,6 @@ import com.pecpwee.lib.envmock.model.CONST;
 import com.pecpwee.lib.envmock.utils.LogUtils;
 import com.pecpwee.lib.envmock.utils.ThreadManager;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -29,7 +22,6 @@ public abstract class AbsPlayer<T> {
     protected T mListener;
     private static final int HANDLER_DO_PLAY = 1;
 
-    private ArrayList<TimedRunnable> mTimedActionsList;
     private int mCurrentTimedActionIndex = 0;
     private volatile boolean isNeedNextAction = false;
     private float mStartPlayOffset = 0;
@@ -39,7 +31,6 @@ public abstract class AbsPlayer<T> {
     private long mAcutalStartPastTimestamp;
     private CountDownLatch latchLock = null;
 
-    private boolean isNeedReloadData = true;
 
     private Handler workHandler = new Handler(ThreadManager.PLAY_LOOPER);
 
@@ -47,6 +38,7 @@ public abstract class AbsPlayer<T> {
         this.mListener = listener;
     }
 
+    private PlayerDataSource mDataSource;
     private Handler mainHandler;//used for delay time
 
     public AbsPlayer(T listener) {
@@ -62,12 +54,17 @@ public abstract class AbsPlayer<T> {
                 }
             }
         };
-        mTimedActionsList = new ArrayList<>();
         this.mListener = listener;
+        mDataSource = new PlayerDataSource();
+    }
+
+
+    public float getCurrentPlayProgress() {
+        return mCurrentTimedActionIndex / (float) mDataSource.getSize();
     }
 
     protected void addTimedAction(TimedRunnable timeRunnable) {
-        mTimedActionsList.add(timeRunnable);
+        mDataSource.addTimedAction(timeRunnable);
     }
 
     public final synchronized void startPlay(long startBaseTime) {
@@ -79,7 +76,7 @@ public abstract class AbsPlayer<T> {
         workHandler.post(new Runnable() {
             @Override
             public void run() {
-                loadDataIfNeed();
+                tryLoadData();
                 dealWithPlayOffset();
                 scheduleAction(mCurrentTimedActionIndex);
                 latchLock.countDown();
@@ -89,6 +86,18 @@ public abstract class AbsPlayer<T> {
 
     }
 
+    public void tryLoadData() {
+        String path = getConfigFilePath();
+        if (TextUtils.isEmpty(path)) {
+            path = getDefaultFilePath();
+        }
+        mDataSource.loadDataIfNeed(path, getParser());
+    }
+
+    public boolean isDataLoadedOK() {
+        return mDataSource.isDataLoadedOk();
+    }
+
     public abstract String getDefaultFilePath();
 
     public abstract String getConfigFilePath();
@@ -96,11 +105,11 @@ public abstract class AbsPlayer<T> {
     private synchronized void doAction() {
         LogUtils.d(TAG + getDefaultFilePath() + "doAction");
 
-        if (mCurrentTimedActionIndex >= mTimedActionsList.size()) {
+        if (mCurrentTimedActionIndex >= mDataSource.getSize()) {
             stopPlay();
             return;
         }
-        Runnable action = mTimedActionsList.get(mCurrentTimedActionIndex);
+        Runnable action = mDataSource.getAction(mCurrentTimedActionIndex);
         mainHandler.post(action);
 
     }
@@ -109,12 +118,12 @@ public abstract class AbsPlayer<T> {
         if (!isNeedNextAction) {
             return;
         }
-        if (actionIndex >= mTimedActionsList.size()) {
+        if (actionIndex >= mDataSource.getSize()) {
             return;
         }
 
 
-        long nextOnePastTime = mTimedActionsList.get(actionIndex).getTime();
+        long nextOnePastTime = mDataSource.getAction(actionIndex).getTime();
         long intervalTime = ((nextOnePastTime - mAcutalStartPastTimestamp) + mCurrentStartTime) - System.currentTimeMillis();
         intervalTime = intervalTime < 0 ? 0 : intervalTime;
         LogUtils.d(TAG + getDefaultFilePath() + " intervalTime " + intervalTime);
@@ -122,22 +131,6 @@ public abstract class AbsPlayer<T> {
     }
 
     protected abstract ILineDataParser getParser();
-
-
-    public synchronized void loadDataIfNeed() {
-        if (!isNeedReloadData) {
-            return;
-        }
-        mTimedActionsList.clear();
-        String configFilePath = getConfigFilePath();
-        if (!TextUtils.isEmpty(configFilePath)) {
-            doLoadData(configFilePath);
-        } else {
-            doLoadData(getDefaultFilePath());
-        }
-        isNeedReloadData = false;
-    }
-
 
 
     private void dealWithPlayOffset() {
@@ -148,11 +141,11 @@ public abstract class AbsPlayer<T> {
         long startOffsetTime = (long) (recordTimeInterval * mStartPlayOffset);
         LogUtils.d("startOffsetTime" + startOffsetTime);
 
-        for (int i = 0; i < mTimedActionsList.size(); i++) {
-            if (mTimedActionsList.get(i).getTime() - mFileRecordStartTime > startOffsetTime) {
+        for (int i = 0; i < mDataSource.getSize(); i++) {
+            if (mDataSource.getAction(i).getTime() - mFileRecordStartTime > startOffsetTime) {
                 mCurrentTimedActionIndex = i;
                 LogUtils.d("mCurrentTimedActionIndex" + mCurrentTimedActionIndex);
-                mAcutalStartPastTimestamp = mTimedActionsList.get(i).getTime();
+                mAcutalStartPastTimestamp = mDataSource.getAction(i).getTime();
                 LogUtils.d("mAcutalStartPastTimestamp" + mAcutalStartPastTimestamp);
                 break;
             }
@@ -160,43 +153,9 @@ public abstract class AbsPlayer<T> {
 
     }
 
-    private synchronized void doLoadData(String path) {
-        doLoadData(new File(path));
-    }
-
-    private synchronized void doLoadData(File file) {
-        ILineDataParser parser = getParser();
-        FileInputStream fis = null;
-        if (!file.exists()) {
-            throw new RuntimeException("cannot find mock data file");
-        }
-        mTimedActionsList.clear();
-        LogUtils.d(getClass().getSimpleName() + "loading data from" + file.getAbsolutePath());
-        try {
-            int linecount = 0;
-
-            fis = new FileInputStream(file);
-            //Construct BufferedReader from InputStreamReader
-            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                parser.onNewLineGot(line);
-                linecount++;
-            }
-
-            br.close();
-            LogUtils.d(getClass().getSimpleName() + "parsed the count of the line is:" + linecount);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public void notifyDataSourceChanged() {
-        isNeedReloadData = true;
+        mDataSource.setNeedReloadData();
     }
 
     public final synchronized void resetPlayProgress() {
@@ -216,10 +175,6 @@ public abstract class AbsPlayer<T> {
         LogUtils.d(getClass().getSimpleName() + "doStopPlay");
     }
 
-
-    public interface ILineDataParser {
-        void onNewLineGot(String line);
-    }
 
     public static abstract class TimedRunnable implements Runnable {
         long time = 0l;

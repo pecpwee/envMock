@@ -1,63 +1,73 @@
 package com.pecpwee.test.envMock;
 
+import android.databinding.DataBindingUtil;
+import android.databinding.ObservableBoolean;
+import android.databinding.ObservableField;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.pecpwee.lib.envmock.RecordController;
-import com.pecpwee.lib.envmock.recorder.AbsRecorder;
-
-import java.util.ArrayList;
+import com.pecpwee.lib.envmock.model.AbsTimeModel;
+import com.pecpwee.lib.envmock.recorder.RecordListener;
+import com.pecpwee.test.envMock.databinding.ActivityRecorderBinding;
 
 public class RecorderActivity extends AppCompatActivity {
-    private Button btnStart;
-    private Button btnStop;
-    private static int PERMISSION_REQUEST_CODE = 1;
-    private ArrayList<AbsRecorder> mRecordList = null;
+    private static final String TAG = "RecorderActivity ";
+    ActivityRecorderBinding binding;
+    private StringBuilder stringBuilder = new StringBuilder();
+    private int recordCount = 0;
     RecordController controller = null;
-    private TextView tvInfoView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recorder);
-        btnStart = (Button) findViewById(R.id.btn_start);
-        btnStop = (Button) findViewById(R.id.btn_stop);
-        tvInfoView = (TextView) findViewById(R.id.tv_info);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_recorder);
+        binding.setViewModel(new ViewModel());
         getSupportActionBar().setTitle("Record");
-
         controller = new RecordController(this);
-        btnStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tvInfoView.setText("recording...");
-                controller.start();
-            }
-        });
-        btnStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tvInfoView.setText("record has stopped");
-                controller.stop();
-            }
-        });
 
-        requestPermission();
     }
 
+    public void startRecord() {
+        controller.addRecordListener(recordListener);
+        controller.start();
 
-    private void requestPermission() {
-        ActivityCompat.requestPermissions(RecorderActivity.this,
-                new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION
-                        , android.Manifest.permission.ACCESS_FINE_LOCATION
-                        , android.Manifest.permission.READ_PHONE_STATE
-                        , android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                },
-                PERMISSION_REQUEST_CODE
-        );
+    }
+
+    private RecordListener recordListener = new RecordListener() {
+        @Override
+        public void onRecordNew(AbsTimeModel model) {
+//            LogUtils.d(TAG + "recordListener " + model.getClass().getName());
+            stringBuilder.append(model.getClass().getSimpleName()).append("\n");
+            if (recordCount > 15) {
+                stringBuilder.setLength(0);
+                recordCount = 0;
+            }
+            recordCount++;
+            binding.getViewModel().tvInfos.set(stringBuilder.toString());
+        }
+    };
+
+    public void stopRecord() {
+        controller.stop();
+    }
+
+    public class ViewModel {
+        public ObservableField<String> tvInfos = new ObservableField<>();
+        public ObservableBoolean isStarted = new ObservableBoolean(false);
+
+        public void onStart() {
+            isStarted.set(true);
+            binding.getViewModel().tvInfos.set("recording...");
+            startRecord();
+        }
+
+        public void onStop() {
+            isStarted.set(false);
+            binding.getViewModel().tvInfos.set("record finished");
+            stopRecord();
+        }
     }
 
 

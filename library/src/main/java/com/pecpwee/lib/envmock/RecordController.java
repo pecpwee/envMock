@@ -3,6 +3,7 @@ package com.pecpwee.lib.envmock;
 import android.content.Context;
 
 import com.pecpwee.lib.envmock.recorder.AbsRecorder;
+import com.pecpwee.lib.envmock.recorder.RecordListener;
 import com.pecpwee.lib.envmock.recorder.connect.ConnRecorder;
 import com.pecpwee.lib.envmock.recorder.location.GpsRecorder;
 import com.pecpwee.lib.envmock.recorder.telephony.TelephonyRecorder;
@@ -30,6 +31,18 @@ public class RecordController {
         mModuleStateMap.put(Context.WIFI_SERVICE, new ModulePack(true, new WifiRecorder()));
         mModuleStateMap.put(Context.LOCATION_SERVICE, new ModulePack(true, new GpsRecorder()));
         mModuleStateMap.put(Context.TELEPHONY_SERVICE, new ModulePack(true, new TelephonyRecorder(context)));
+    }
+
+    public void addRecordListener(RecordListener listener) {
+        for (ModulePack pack : mModuleStateMap.values()) {
+            pack.recorder.addRecordListener(listener);
+        }
+    }
+
+    public void removeRecordListener(RecordListener listener) {
+        for (ModulePack pack : mModuleStateMap.values()) {
+            pack.recorder.removeRecordListener(listener);
+        }
     }
 
 
@@ -111,6 +124,7 @@ public class RecordController {
 
         return this;
     }
+
     public RecordController setConnRecordFilePath(String filepath) {
         ensureNoRecording();
         mModuleStateMap.get(Context.CONNECTIVITY_SERVICE).recorder.setFilePath(filepath);

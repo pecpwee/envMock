@@ -1,6 +1,7 @@
 # EnvMock
 
-[ ![Download](https://api.bintray.com/packages/pecpwee/envMock/envMock/images/download.svg) ](https://bintray.com/pecpwee/envMock/envMock/_latestVersion)
+core library[ ![Download](https://api.bintray.com/packages/pecpwee/envMock/library/images/download.svg) ](https://bintray.com/pecpwee/envMock/library/_latestVersion)
+ui wrapper[ ![Download](https://api.bintray.com/packages/pecpwee/envMock/uiwrapper/images/download.svg) ](https://bintray.com/pecpwee/envMock/uiwrapper/_latestVersion)
 
 ## Introduce
 it's an Android Library for mocking the signal of locating. No root permission require.

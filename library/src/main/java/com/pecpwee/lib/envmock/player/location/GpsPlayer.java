@@ -14,8 +14,11 @@ import com.pecpwee.lib.envmock.model.location.OnProviderEnabled;
 import com.pecpwee.lib.envmock.model.location.OnStatusChanged;
 import com.pecpwee.lib.envmock.model.location.OnSvStatusChanged;
 import com.pecpwee.lib.envmock.player.AbsPlayer;
+import com.pecpwee.lib.envmock.player.ILineDataParser;
 import com.pecpwee.lib.envmock.utils.GsonFactory;
 import com.pecpwee.lib.envmock.utils.LogUtils;
+
+import java.util.ArrayList;
 
 import static com.pecpwee.lib.envmock.model.location.CONST.ON_FIRST_FIX;
 import static com.pecpwee.lib.envmock.model.location.CONST.ON_GPS_START;
@@ -33,9 +36,15 @@ import static com.pecpwee.lib.envmock.model.location.CONST.ON_SVSTATUS_CHANGED;
 
 public class GpsPlayer extends AbsPlayer<IGpsPlayerListener> {
 
+    private static final String TAG = "GpsPlayer ";
+    private ArrayList<Location> mGpsLocationList;
+
+
+    private Location mLastPlayedLocation;
 
     public GpsPlayer(IGpsPlayerListener listener) {
         super(listener);
+        mGpsLocationList = new ArrayList<>();
     }
 
     @Override
@@ -53,6 +62,21 @@ public class GpsPlayer extends AbsPlayer<IGpsPlayerListener> {
         return new Parser();
     }
 
+    public ArrayList getCompleteGpsPathLocation() {
+        if (!isDataLoadedOK()) {
+            return null;
+        }
+        return mGpsLocationList;
+    }
+
+    public Location getLastPlayedLocation() {
+        return mLastPlayedLocation;
+    }
+
+    public void resetLastPlayedLocation() {
+        mLastPlayedLocation = null;
+    }
+
     class Parser extends AbsParser {
 
         @Override
@@ -61,11 +85,12 @@ public class GpsPlayer extends AbsPlayer<IGpsPlayerListener> {
                 case ON_LOCATION_CHANGED: {
                     OnLocationChanged obj = GsonFactory.getGson().fromJson(line, OnLocationChanged.class);
                     final Location location = obj.getLocation();
+                    mGpsLocationList.add(location);
                     addTimedAction(new TimedRunnable(obj.getTime()) {
                         @Override
                         public void run() {
-                            LogUtils.d("onLocationChanged");
                             mListener.onLocationChanged(location);
+                            mLastPlayedLocation = location;
                         }
                     });
                     break;

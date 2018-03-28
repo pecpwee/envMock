@@ -9,6 +9,7 @@ import com.pecpwee.lib.envmock.model.wifi.CONST;
 import com.pecpwee.lib.envmock.model.wifi.GetConnectionInfo;
 import com.pecpwee.lib.envmock.model.wifi.GetScanResult;
 import com.pecpwee.lib.envmock.player.AbsPlayer;
+import com.pecpwee.lib.envmock.player.ILineDataParser;
 import com.pecpwee.lib.envmock.utils.GsonFactory;
 
 import java.util.List;

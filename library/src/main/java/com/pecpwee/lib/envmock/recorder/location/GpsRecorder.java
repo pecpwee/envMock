@@ -50,7 +50,7 @@ public class GpsRecorder extends AbsRecorder {
     @Override
     public void onStart() {
         try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10, 10, locationlistner);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locationlistner);
             locationManager.addNmeaListener(nmeaListener);
             registerGpsStatusListener();
         } catch (SecurityException e) {
